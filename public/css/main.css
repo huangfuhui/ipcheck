@@ -1,0 +1,195 @@
+/* IP-Management-Page's style sheets */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "微软雅黑";
+}
+
+.head {
+    margin: 30px 100px;
+}
+
+.head h2 {
+    text-align: center;
+}
+
+.head span {
+    float: right;
+    color: gray;
+    margin-right: 150px;
+}
+
+.body {
+    margin: 30px 200px;
+}
+
+/* ----------------------Body Left <start>------------------------ */
+.body_left {
+    float: left;
+    border: 1px solid lightgray;
+    padding: 15px;
+    padding-bottom: 200px;
+}
+
+.body_left ul {
+    list-style-type: none;
+}
+
+.body_left .menu a:link, a:visited {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #FFFFFF;
+    background-color: lightgray;
+    width: 120px;
+    padding: 4px;
+    margin-bottom: 5px;
+    text-decoration: none;
+}
+
+.body_left .menu a:hover, a:active {
+    background-color: black;
+}
+
+.body_left .menu_select a {
+    background-color: gray;
+}
+
+/* ----------------------Body Left <end>------------------------ */
+
+/* ----------------------Body Right <start>------------------------ */
+.body_right {
+    border: 1px solid lightgray;
+    float: left;
+    margin-left: 100px;
+    width: 650px;
+    height: 430px;
+}
+
+.body_right table {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    width: 90%;
+    border-collapse: collapse;
+    margin: 15px auto;
+}
+
+.body_right td, th {
+    font-size: 0.5em;
+    border: 1px solid lightgrey;
+    padding: 3px 7px 2px 7px;
+}
+
+.body_right th {
+    font-size: 0.8em;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    background-color: lightgrey;
+    color: #ffffff;
+}
+
+.body_right .double_tr td {
+    color: #000000;
+    background-color: WhiteSmoke;
+}
+
+/* ----------------------Body Right <end>------------------------ */
+
+/* ----------------------Page Selector <start>------------------------ */
+.page_selector {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.page_selector span {
+    font-weight: bold;
+    font-size: 10px;
+    display: inline-block;
+    margin-right: 3px;
+}
+
+.current_page {
+    width: 20px;
+    padding: 4px;
+    margin-bottom: 5px;
+    color: white;
+    background-color: gray;
+}
+
+.more_page {
+    width: 20px;
+    color: lightgray;
+}
+
+.total_page {
+    width: 100px;
+    padding: 4px;
+    margin-left: 6px;
+    margin-bottom: 5px;
+    background-color: lightgray;
+}
+
+.page_selector a:link, a:visited {
+    display: block;
+    font-weight: bold;
+    font-size: 10px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #FFFFFF;
+    background-color: lightgray;
+    width: 20px;
+    padding: 4px;
+    margin-bottom: 5px;
+    text-decoration: none;
+}
+
+.page_selector a:hover, a:active {
+    background-color: black;
+}
+/* ----------------------Page Selector <end>------------------------ */
+
+/* ----------------------Ban Record <start>------------------------ */
+.ban_record_example {
+    color: gray;
+    float: left;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+.ban_record_example div {
+    margin-top: 10px;
+    border: 1px lightgray solid;
+    padding: 5px;
+}
+
+.ban_record_text {
+    float: left;
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+.ban_record_text input {
+    margin-left: 10px;
+}
+
+/* ----------------------Ban Record <end>------------------------ */
+
+/* ----------------------Foot <start>------------------------ */
+.foot {
+    clear: both;
+    float: left;
+    margin-top: 80px;
+    width: 100%;
+    text-align: center;
+    color: gray;
+}
+
+.foot a {
+    text-decoration: none;
+    color: black;
+}
+
+.foot a:hover {
+    text-decoration: underline;
+}
+/* ----------------------Foot <end>------------------------ */
