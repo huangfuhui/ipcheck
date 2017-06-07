@@ -19,6 +19,7 @@ interface DBAdapter
 
     /**
      * 关闭数据库连接
+     * @param mixed $connection 待关闭的数据库连接
      */
-    function close();
+    function close($connection);
 }
