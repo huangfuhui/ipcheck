@@ -5,13 +5,12 @@
 
 namespace Ipcheck;
 
-
 class RedisConnectionSingle implements DBAdapter
 {
-    private static $REDIS_CONNECTION = '';      // 全局单一Redis连接对象
+    private static $REDIS_CONNECTION = null;      // 全局单一Redis连接对象
 
-    private $redisURL = '127.0.0.1';            // Redis连接地址
-    private $redisPort = '6379';                // Redis端口
+    private static $REDIS_URL = '127.0.0.1';            // Redis连接地址
+    private static $REDIS_PORT = '6379';                // Redis端口
 
     /**
      * 私有化构造函数，完成数据库配置的读取
@@ -21,10 +20,10 @@ class RedisConnectionSingle implements DBAdapter
         $DBAddress = getConf('DBAddress');
         $DBPort = getConf('DBPort');
         if (!empty($DBAddress)) {
-            $this->redisURL = $DBAddress;
+            self::$REDIS_URL = $DBAddress;
         }
         if (!empty($DBPort)) {
-            $this->redisPort = $DBPort;
+            self::$REDIS_PORT = $DBPort;
         }
     }
 
@@ -39,8 +38,8 @@ class RedisConnectionSingle implements DBAdapter
     public function getConnection($address, $port, $userName, $password)
     {
         try {
-            $redis = new Redis();
-            $redisConnection = $redis->connect($this->redisURL, $this->redisPort);
+            $redis = new \Redis();
+            $redisConnection = $redis->connect(self::$REDIS_URL, self::$REDIS_PORT);
         } catch (\Exception $e) {
             // TODO:异常处理和日志记录
         } finally {
@@ -54,23 +53,32 @@ class RedisConnectionSingle implements DBAdapter
 
     /**
      * 关闭Redis数据库连接
+     * @param \Redis $connection 待关闭的数据库连接
      */
-    public function close()
+    public function close($connection)
     {
-        empty(self::$REDIS_CONNECTION) || self::$REDIS_CONNECTION->close();
+        empty($connection) || $connection->close();
     }
 
     /**
      * 获取Redis数据库对象
-     * @return Redis 返回数据库连接对象
+     * @return RedisConnectionSingle Redis 返回数据库连接对象
      */
     public static function getRedis()
     {
         if (!empty(self::$REDIS_CONNECTION)) {
             return self::$REDIS_CONNECTION;
         } else {
-            self::$REDIS_CONNECTION = new self();
+            self::$REDIS_CONNECTION = (new self())->getConnection(self::$REDIS_URL, self::$REDIS_PORT, '', '');
             return self::$REDIS_CONNECTION;
         }
+    }
+
+    /**
+     * 关闭Redis数据库连接（静态方法解决方案）
+     */
+    public static function closeRedis()
+    {
+        (new self())->close(self::$REDIS_CONNECTION);
     }
 }
