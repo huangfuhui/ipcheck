@@ -32,16 +32,22 @@ class InitializeClass
      * 解析请求，获取客户端的相关信息
      * @return array 返回解析后的IP请求信息
      */
-    private function getIpInfo()
+    public function getIpInfo()
     {
         return array(
             'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'],                           // 访问地址
+            'REMOTE_PORT' => $_SERVER['REMOTE_PORT'],                           // 访问者源端口
             'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],                   // 访问者的UA
             'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'],                     // 请求方法
             'REQUEST_URI' => $_SERVER['REQUEST_URI'],                           // 请求的URI
             'SCRIPT_NAME' => $_SERVER['SCRIPT_NAME'],                           // 请求的文件名称
             'REQUEST_URL' => $_SERVER['SERVER_ADDR'] . $_SERVER['REQUEST_URI'], // 访问的URL
             'REQUEST_TIME' => time(),                                           // 访问的时间
+            'REQUEST_SCHEME' => $_SERVER['REQUEST_SCHEME'],                     // 请求协议
+            'SERVER_PROTOCOL' => $_SERVER['SERVER_PROTOCOL'],                   // 服务器响应协议
+            'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],                           // 服务器地址
+            'SERVER_PORT' => $_SERVER['SERVER_PORT'],                           // 服务器端口
+            'SERVER_SOFTWARE' => $_SERVER['SERVER_SOFTWARE'],                   // 服务器信息
         );
     }
 }
