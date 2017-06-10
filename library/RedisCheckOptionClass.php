@@ -44,6 +44,52 @@ class RedisCheckOptionClass implements CheckOption
     }
 
     /**
+     * 检测当前IP的访问频率是否符合用户设置的标准
+     * @return bool 是则返回false，否则返回true
+     */
+    public function checkFrequency()
+    {
+        // 1.选择一号数据库
+        $this->redis->select(1);
+
+        // 2.更新当前IP的访问频率
+        $this->redis->lPush($this->ipInfo['REMOTE_ADDR'], $this->ipInfo['REQUEST_TIME']);
+
+        // 3.求当前IP总共访问次数
+        $times = $this->redis->lLen($this->ipInfo['REMOTE_ADDR']);
+
+        // 4.如果当前IP总访问次数大于系统设置的访问间隔，则进行IP频率检测
+        $accessFrequency = getConf('AccessFrequency');      // 获取用户设置的访问频率，默认'10t/m'
+        empty($accessFrequency) ? $accessFrequency = 10 : null;
+        if ($times > $accessFrequency) {
+            // 4.1求当前IP访问间隔内第一次访问的时间
+            $last_time = $this->redis->lIndex($this->ipInfo['REMOTE_ADDR'], -1);
+            // 4.2保留当前IP访问间隔内的每一次访问时间，方便下一次统计比较
+            $this->redis->lTrim($this->ipInfo['REMOTE_ADDR'], 0, $accessFrequency - 1);
+            // 4.3如果当前IP在规定的时间内访问频率超出标准，则返回true
+            if ($this->ipInfo['REQUEST_TIME'] - $last_time < getTimeUnitAsTimestamp()) {
+                return true;
+            }
+        }
+
+        // 5.如果当前IP的访问频率正常则返回false
+        return false;
+    }
+
+    /**
+     * 记录当前IP访问的有效性
+     * @param bool $validity true表示有效，false表示无效
+     */
+    public function recordAccessValidity($validity = true)
+    {
+        if ($validity) {
+            $this->redis->zIncrBy('ip:effective_access', 1, date('y-m-d', time()));
+        } else {
+            $this->redis->zIncrBy('ip:invalid_access', 1, date('y-m-d', time()));
+        }
+    }
+
+    /**
      * 关闭Redis数据库连接
      */
     public function closeConnection()
