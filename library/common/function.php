@@ -57,3 +57,30 @@ function dump($var, $echo = true, $label = null, $strict = true)
     } else
         return $output;
 }
+
+/**
+ * 获取系统设置的访问时间单位的时间戳表示
+ * @return int
+ */
+function getTimeUnitAsTimestamp()
+{
+    $timeUnit = getConf('TimeUnit');
+    switch (strtolower($timeUnit)) {
+        case 'm' : {
+            $timeUnit = 60;
+        }
+            break;
+        case 'h' : {
+            $timeUnit = 3600;
+        }
+            break;
+        case 'd' : {
+            $timeUnit = 86400;
+        }
+            break;
+        default : {
+            $timeUnit = 60;
+        }
+    }
+    return $timeUnit;
+}
