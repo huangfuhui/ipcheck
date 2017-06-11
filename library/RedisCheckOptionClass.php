@@ -18,7 +18,8 @@ class RedisCheckOptionClass implements CheckOption
     }
 
     /**
-     * 记录或更新当前访问者的信息
+     * 记录或更新当前访问者的信息，按照用户配置只记录最新的N条访问者信息，默认N=200
+     *
      * 数据库：0
      * 键：IP_[访问时间戳]
      * 值:json_encode(
@@ -38,14 +39,38 @@ class RedisCheckOptionClass implements CheckOption
      *       'SERVER_SOFTWARE' => $_SERVER['SERVER_SOFTWARE'],                   // 服务器信息
      *      );
      * )
+     * 类型：list
      */
     public function recordAccessInfo()
     {
+        $this->redis->select(0);
+        // JSON格式化访问信息
+        $ipInfo = json_encode($this->ipInfo);
+        // 更新访问记录队列，控制保留最新的N条信息
+        $this->redis->lPush('ip:access_record', $ipInfo);
+        $takeNewRecords = getConf('NewRecords');
+        empty($takeNewRecords) ? $takeNewRecords = 199 : --$takeNewRecords;
+        $this->redis->lTrim('ip:access_record', 0, $takeNewRecords);
+    }
+
+    /**
+     * 更新当前IP的访问次数
+     *
+     * 数据库：0
+     * 键：ip:access_times | 属性：IP | 值：+1 | 类型：set
+     */
+    public function recordAccessTimes()
+    {
+        $this->redis->select(0);
+        $this->redis->zIncrBy('ip:access_times', 1, $this->ipInfo['REMOTE_ADDR']);
     }
 
     /**
      * 检测当前IP的访问频率是否符合用户设置的标准
      * @return bool 是则返回false，否则返回true
+     *
+     * 数据库：1
+     * 键：IP | 值：当前IP请求时间的时间戳 | 类型：list
      */
     public function checkFrequency()
     {
@@ -79,9 +104,14 @@ class RedisCheckOptionClass implements CheckOption
     /**
      * 记录当前IP访问的有效性
      * @param bool $validity true表示有效，false表示无效
+     *
+     * 数据库：0
+     * 键：ip:effective_access | 属性：date('y-m-d', time()) | 值：+1 | 类型：set
+     * 键：ip:invalid_access   | 属性：date('y-m-d', time()) | 值：+1 | 类型：set
      */
     public function recordAccessValidity($validity = true)
     {
+        $this->redis->select(0);
         if ($validity) {
             $this->redis->zIncrBy('ip:effective_access', 1, date('y-m-d', time()));
         } else {
