@@ -13,6 +13,8 @@ class AutoloadClass
         $classInfo = explode(DIRECTORY_SEPARATOR, $class);
         if (in_array('Tool', $classInfo)) { // 载入 '/library/tool' 文件夹下的工具类
             require __DIR__ . DIRECTORY_SEPARATOR . $classInfo[2] . '.php';
+        } elseif (in_array('Admin', $classInfo)) {  // 载入 '/library/admin' 文件夹下的类
+            require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . $classInfo[2] . '.php';
         } else {    // 载入 '/library' 目录下的类
             require dirname(__DIR__) . DIRECTORY_SEPARATOR . $classInfo[1] . '.php';
         }
