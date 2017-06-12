@@ -11,5 +11,4 @@ spl_autoload_register('Ipcheck\Tool\AutoloadClass::autoload');
 require './library/common/function.php';
 
 // 执行IP监测过滤
-require './library/IpcheckClass.php';
 (new Ipcheck\IpcheckClass())->check();
