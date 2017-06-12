@@ -6,9 +6,9 @@
 
 namespace Ipcheck;
 
-use Ipcheck\Tool;
+use Ipcheck\Tool\InitializeClass;
 
-class IpcheckClass extends Tool\InitializeClass
+class IpcheckClass extends InitializeClass
 {
     private $DBHandler = null;            // 数据库操作对象
 
