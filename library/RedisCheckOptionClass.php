@@ -1,12 +1,13 @@
 <?php
 
 /**
- * 使用Redis实现IP过滤和监测操作
+ * 使用Redis实现IP过滤和监测操作，该类实现的CheckOption接口主要服务Ipcheck
+ * 工具的IP过滤和监测，而实现的CheckOptionAdmin接口主要为系统后台管理提供服务。
  */
 
 namespace Ipcheck;
 
-class RedisCheckOptionClass implements CheckOption
+class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 {
     private $redis = '';            // 数据库对象
     private $ipInfo = '';           // 访问者信息
@@ -16,6 +17,8 @@ class RedisCheckOptionClass implements CheckOption
         $this->redis = $redis;
         $this->ipInfo = $ipInfo;
     }
+
+//----------------------------------接口CheckOption实现----------------------------------------
 
     /**
      * 记录或更新当前访问者的信息，按照用户配置只记录最新的N条访问者信息，默认N=200
@@ -125,5 +128,22 @@ class RedisCheckOptionClass implements CheckOption
     public function closeConnection()
     {
         RedisConnectionSingle::closeRedis();
+    }
+
+//--------------------------------接口CheckOptionAdmin实现--------------------------------------
+
+    public function isLogin()
+    {
+        // TODO: Implement is_login() method.
+    }
+
+    public function login($usr, $pwd)
+    {
+        // TODO: Implement login() method.
+    }
+
+    public function modifyPassword($oldPwd, $newPwd)
+    {
+        // TODO: Implement modifyPassword() method.
     }
 }
