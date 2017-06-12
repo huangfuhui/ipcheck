@@ -5,12 +5,10 @@
 
 namespace Ipcheck\Admin;
 
-use Ipcheck\Tool;
-
-class IndexController extends Tool\InitializeClass
+class IndexController extends BaseController
 {
     public function index()
     {
-
+        $this->display();
     }
 }
