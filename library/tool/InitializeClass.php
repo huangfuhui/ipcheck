@@ -50,4 +50,15 @@ class InitializeClass
             'SERVER_SOFTWARE' => $_SERVER['SERVER_SOFTWARE'],                   // 服务器信息
         );
     }
+
+    /**
+     * 引入HTML文件
+     * @param string $html 需要引入的HTML文件名，无需后缀，大小写敏感
+     * @param array $htmlData 需要渲染的数据
+     */
+    public function display($html = '', $htmlData = array())
+    {
+        $dataRender = new DataRenderClass();
+        $dataRender->display($html, $htmlData);
+    }
 }
