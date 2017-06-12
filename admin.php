@@ -10,5 +10,5 @@ spl_autoload_register('Ipcheck\Tool\AutoloadClass::autoload');
 // 加载全局函数
 require './library/common/function.php';
 
-// 准备进入系统管理首页
-(new \Ipcheck\Admin\IndexController())->index();
+// 准备进入后台，使用路由工具对请求进行分发
+(new \Ipcheck\Tool\RouterClass())->dispatch();
