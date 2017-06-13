@@ -1,0 +1,44 @@
+@charset "UTF-8";
+/* 后台登录页面样式表 */
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "微软雅黑";
+}
+
+.login_head, .login_body {
+    margin: 70px 300px 10px 300px;
+    text-align: center;
+}
+
+.login_head h2 {
+    margin-bottom: 10px;
+}
+
+.login_form {
+    border: 1px solid gray;
+    border-radius: 10px;
+    margin: auto;
+    width: 240px;
+    height: 200px;
+    background-color: whitesmoke;
+}
+
+#login_form {
+    margin-top: 30px;
+}
+
+#login_form input {
+    margin-bottom: 10px;
+}
+
+#login_form span {
+    float: left;
+    margin-left: 40px;
+}
+
+.login_submit {
+    height: 30px;
+    width: 80px;
+}
