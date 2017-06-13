@@ -42,6 +42,7 @@ class RedisConnectionSingle implements DBAdapter
             $redisConnection = $redis->connect(self::$REDIS_URL, self::$REDIS_PORT);
         } catch (\Exception $e) {
             // TODO:异常处理和日志记录
+            echo $e;
         } finally {
             if ($redisConnection) {
                 return $redis;
