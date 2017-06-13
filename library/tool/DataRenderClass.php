@@ -17,9 +17,9 @@ class DataRenderClass
         $length = strrpos(__FILE__, 'library' . DIRECTORY_SEPARATOR . 'tool' . DIRECTORY_SEPARATOR . 'DataRenderClass.php');
         self::$ROOT = substr(__FILE__, 0, $length);
 
-        self::$HTML_PATH = self::$ROOT . 'public' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR;
-        self::$CSS_PATH = self::$ROOT . 'public' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
-        self::$JS_PATH = self::$ROOT . 'public' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
+        self::$HTML_PATH = 'public/html/';
+        self::$CSS_PATH = 'public/css/';
+        self::$JS_PATH = 'public/js/';
     }
 
     /**
