@@ -5,7 +5,7 @@
 
 // 注册类自动加载器
 require './library/tool/AutoloadClass.php';
-spl_autoload_register('Ipcheck\Tool\AutoloadClass::autoload');
+spl_autoload_register('Ipcheck\Tool\AutoloadClass::autoloadForAdmin');
 
 // 加载全局函数
 require './library/common/function.php';
