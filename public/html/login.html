@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>登录</title>
     <link rel="stylesheet" type="text/css" href="<?php echo self::$CSS_PATH; ?>login.css"/>
+    <script type="text/javascript" src="<?php echo self::$JS_PATH; ?>jquery-1.8.3.min.js"></script>
 </head>
 <body>
 <div class="login_head">
@@ -15,17 +16,42 @@
 
 <div class="login_body">
     <div class="login_form">
-        <form id="login_form">
+        <form id="login_form" action="admin.php?c=usrapi&a=login" method="post">
             <span>用户名</span><br/>
-            <input type="text" name="usr"/><br/>
+            <input type="text" name="usr" value=""/><br/>
             <span>密码</span><br/>
-            <input type="password" name="pwd"/><br/>
-            <input type="button" class="login_submit" value="登录"/>
+            <input type="password" name="pwd" value=""/><br/>
+            <input type="submit" class="login_submit" value="登录"/>
+            <span class="error_msg"></span>
         </form>
     </div>
 </div>
 
-<div class="login_foot">
-</div>
+<div class="login_foot"></div>
+
+<script type="text/javascript">
+    $(document)
+        .ajaxStart(function () {
+            $("input:submit").attr("disabled", true);
+            $(".error_msg").text("");
+        })
+        .ajaxStop(function () {
+            $("input:submit").attr("disabled", false);
+        });
+
+    $("form").submit(function () {
+        var self = $(this);
+        $.post(self.attr("action"), self.serialize(), success, "json");
+        return false;
+
+        function success(res) {
+            if (res.code) {
+                window.location.href = res.data;
+            } else {
+                self.find(".error_msg").text(res.data);
+            }
+        }
+    });
+</script>
 </body>
 </html>
