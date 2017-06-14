@@ -32,9 +32,11 @@ class AutoloadClass
         $classInfo = explode('\\', $class);
         if (in_array('Tool', $classInfo)) {         // 载入 '/library/tool' 文件夹下的工具类
             require __DIR__ . DIRECTORY_SEPARATOR . $classInfo[2] . '.php';
-        } elseif (substr_count($class, 'api')) {    // 载入 '/library/admin/API' 文件夹下的API
+        } elseif (substr_count($class, 'api') ||
+            substr_count($class, 'API')
+        ) {                                                         // 载入 '/library/admin/API' 文件夹下的API
             require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR .
-                'API' . DIRECTORY_SEPARATOR . $classInfo[3] . '.php';
+                'API' . DIRECTORY_SEPARATOR . substr($classInfo[3], 0, -3) . 'API.php';
         } elseif (count($classInfo) == 2) {                         // 载入 '/library' 目录下的类
             require dirname(__DIR__) . DIRECTORY_SEPARATOR . $classInfo[1] . '.php';
         } else {                                                    // 载入 '/library/admin' 文件夹下的控制器
