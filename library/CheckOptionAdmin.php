@@ -18,7 +18,7 @@ interface CheckOptionAdmin
      * 用户登录
      * @param int $usr 用户名
      * @param String $pwd 密码
-     * @return array
+     * @return bool
      */
     function login($usr, $pwd);
 
