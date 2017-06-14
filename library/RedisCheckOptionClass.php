@@ -134,11 +134,13 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 
     public function isLogin()
     {
+        return true;
         // TODO: Implement is_login() method.
     }
 
     public function login($usr, $pwd)
     {
+        return true;
         // TODO: Implement login() method.
     }
 
