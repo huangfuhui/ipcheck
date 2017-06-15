@@ -9,8 +9,8 @@ namespace Ipcheck;
 
 class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 {
-    private $redis = '';            // 数据库对象
-    private $ipInfo = '';           // 访问者信息
+    public $redis = '';            // 数据库对象
+    public $ipInfo = '';           // 访问者信息
 
     public function __construct($redis, $ipInfo)
     {
