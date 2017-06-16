@@ -5,13 +5,13 @@
 
 namespace Ipcheck\Install;
 
-use Ipcheck\DBHandlerFactory;
+use Ipcheck\RedisCheckOptionClass;
 
 interface Install
 {
     /**
      * 执行系统数据库安装及一些系统配置检查等系统初始化操作
-     * @param DBHandlerFactory $DBHandler 数据库操作对象
+     * @param RedisCheckOptionClass $DBHandler 数据库操作对象
      * @return bool
      */
     function install($DBHandler = null);
