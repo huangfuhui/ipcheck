@@ -30,6 +30,11 @@ class IndexController extends BaseController
      */
     public function login()
     {
+        // 如果用户已经登录则跳转至首页
+        if ($this->isLogin) {
+            $this->index();
+        }
+
         $this->display('login');
     }
 }
