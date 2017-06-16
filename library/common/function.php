@@ -84,3 +84,31 @@ function getTimeUnitAsTimestamp()
     }
     return $timeUnit;
 }
+
+/**
+ * SESSION操作函数，用于获取、设置和删除SESSION
+ * @param string $key 键名
+ * @param string $value 键值，键值为空字符串时获取SESSION，键值为null时删除SESSION，键值非空时设置SESSION
+ * @return string
+ */
+function session($key, $value = '')
+{
+    if (empty($key)) {
+        return '';
+    }
+
+    // 开启session
+    session_start();
+
+    if ('' === $value) {                    // 获取session
+        if (isset($_SESSION[$key])) {
+            return $_SESSION[$key];
+        } else {
+            return '';
+        }
+    } elseif (is_null($value)) {            // 删除session
+        unset($_SESSION[$key]);
+    } else {                                // 设置session
+        $_SESSION[$key] = $value;
+    }
+}
