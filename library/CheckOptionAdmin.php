@@ -23,6 +23,13 @@ interface CheckOptionAdmin
     function login($usr, $pwd);
 
     /**
+     * 用户登出
+     * @param string $usr 用户名
+     * @return bool
+     */
+    function logout($usr);
+
+    /**
      * 记录系统后台操作日志信息
      * @param mixed $msg 需要记录的日志信息
      * @return bool
