@@ -10,17 +10,24 @@ interface CheckOptionAdmin
 
     /**
      * 判断当前IP是否登录
-     * @return bool
+     * @return array|bool 如果用户已经登录则返回包含用户ID或唯一标识的数组，未登录则返回false
      */
     function isLogin();
 
     /**
      * 用户登录
-     * @param int $usr 用户名
+     * @param string $usr 用户名
      * @param String $pwd 密码
      * @return bool
      */
     function login($usr, $pwd);
+
+    /**
+     * 记录系统后台操作日志信息
+     * @param mixed $msg 需要记录的日志信息
+     * @return bool
+     */
+    function recordAdminLog($msg);
 
     /**
      * 修改用户密码
