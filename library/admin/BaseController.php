@@ -13,6 +13,7 @@ class BaseController extends InitializeClass
     protected $DBHandler = null;                    // 数据库操作对象
 
     protected $isLogin = false;                     // 用户登录标记
+    protected $usrName = '';                        // 用户账号名称
 
     protected $ipInfo = array();                    // 请求IP信息
     protected $action = 'index';                    // 请求动作
@@ -28,7 +29,10 @@ class BaseController extends InitializeClass
         $this->DBHandler = (new DBHandlerFactory())->getDBHandler();
 
         // 判断是否登录成功，并标记用户
-        $this->isLogin = $this->DBHandler->isLogin();
+        $res = $this->DBHandler->isLogin();
+        if (!empty($res)) {
+            $this->usrName = $res['usr'];
+        }
 
         $this->ipInfo = self::$IPINFOS;
 
