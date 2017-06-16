@@ -29,6 +29,21 @@ class UsrAPI extends BaseAPI
         } else {
             $this->result['data'] = '账号或密码错误！';
         }
+
+        $this->returnAjax();
+    }
+
+    /**
+     * 用户登出API
+     */
+    public function logout()
+    {
+        if ($this->isLogin) {
+            $this->DBHandler->logout($this->usrName);
+        }
+
+        $this->result['code'] = 1;
+        $this->result['data'] = 'admin.php?c=index&a=login';
         $this->returnAjax();
     }
 }
