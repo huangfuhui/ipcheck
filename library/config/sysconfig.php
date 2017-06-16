@@ -13,4 +13,5 @@ return array(
     'DBPort' => '6379',                             // 数据库端口
     'DBUserName' => '',                             // 数据库用户名
     'DBPassword' => '',                             // 数据库密码
+    'SaltKey' => 'Ipcheck',                         // 数据库加密盐值
 );
