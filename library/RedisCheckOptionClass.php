@@ -132,16 +132,58 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 
 //--------------------------------接口CheckOptionAdmin实现--------------------------------------
 
+    /**
+     * 判断当前用户是否登录成功
+     * @return array|bool 如果用户已经登录则返回包含用户ID或唯一标识的数组，未登录则返回false
+     */
     public function isLogin()
     {
-        return true;
-        // TODO: Implement is_login() method.
+        $res = session('logined');
+        if (empty($res)) {
+            return false;
+        } else {
+            return json_decode($res, true);
+        }
     }
 
+    /**
+     * 系统后台用户登录
+     * @param string $usr 账号
+     * @param String $pwd 密码
+     * @return bool
+     */
     public function login($usr, $pwd)
     {
+        $this->redis->select(15);
+
+        // 判断用户是否存在
+        if (!$this->redis->exists($usr)) {
+            return false;
+        }
+
+        // 判断密码是否正确
+        $realPwd = md5($this->redis->hGet($usr, 'pwd') . getConf('SaltKey'));
+        if ($realPwd != $pwd) {
+            return false;
+        }
+
+        // 写入SESSION，标记登录成功
+        $loginLog = array(
+            'usr' => $usr,
+            'loginTime' => time()
+        );
+        session('logined', json_encode($loginLog));
+
         return true;
-        // TODO: Implement login() method.
+    }
+
+    public function recordAdminLog($msg)
+    {
+        // TODO: Implement recordAdminLog() method.
+        // 选择14号数据库
+        $this->redis->select(14);
+        // 存放当前账号访问日志
+        $this->redis->lPush('log:login:admin', $this->ipInfo['REMOTE_ADDR'] . ':' . $this->ipInfo['REQUEST_TIME']);
     }
 
     public function modifyPassword($oldPwd, $newPwd)
