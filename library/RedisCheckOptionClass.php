@@ -177,6 +177,19 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         return true;
     }
 
+    /**
+     * 后台用户登录注销
+     * @param string $usr
+     * @return bool
+     */
+    public function logout($usr)
+    {
+        if (session($usr)) {
+            session($usr, null);
+        }
+        return true;
+    }
+
     public function recordAdminLog($msg)
     {
         // TODO: Implement recordAdminLog() method.
