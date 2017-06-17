@@ -19,7 +19,7 @@ class RedisInstallClass implements Install
         // 获取Redis连接对象
         $redis = $DBHandler->redis;
         // 删除当前数据库数据
-        $redis->delete('*');
+        $redis->flushAll();
         // 选择15号数据库，用于存放用户个人信息
         $redis->select(15);
         $redis->hSet('admin', 'pwd', md5('IpcheckAdmin' . getConf('SaltKey')));         // 密码
@@ -27,7 +27,7 @@ class RedisInstallClass implements Install
         $redis->hSet('admin', 'email', '0');                                            // 邮箱
 
         // 检查数据库是否成功插入数据
-        if ($redis->hGet('admin', 'pwd') == 'IpcheckAdmin') {
+        if ($redis->hGet('admin', 'pwd') == md5('IpcheckAdmin' . getConf('SaltKey'))) {
             return true;
         } else {
             return false;
