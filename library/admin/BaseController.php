@@ -31,6 +31,7 @@ class BaseController extends InitializeClass
         // 判断是否登录成功，并标记用户
         $res = $this->DBHandler->isLogin();
         if (!empty($res)) {
+            $this->isLogin = true;
             $this->usrName = $res['usr'];
         }
 
