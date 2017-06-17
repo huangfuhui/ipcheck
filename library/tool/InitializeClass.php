@@ -52,7 +52,8 @@ class InitializeClass
     }
 
     /**
-     * 引入HTML文件
+     * 引入HTML文件，该方法输出HTML文件后就退出程序，后续不再有输出和执行了，
+     * 因此在控制器中需要把数据渲染放在逻辑的最后执行。
      * @param string $html 需要引入的HTML文件名，无需后缀，大小写敏感
      * @param array $htmlData 需要渲染的数据
      */
@@ -60,5 +61,6 @@ class InitializeClass
     {
         $dataRender = new DataRenderClass();
         $dataRender->display($html, $htmlData);
+        exit;
     }
 }
