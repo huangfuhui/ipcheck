@@ -162,8 +162,8 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         }
 
         // 判断密码是否正确
-        $realPwd = md5($this->redis->hGet($usr, 'pwd') . getConf('SaltKey'));
-        if ($realPwd != $pwd) {
+        $realPwd = $this->redis->hGet($usr, 'pwd');
+        if ($realPwd != md5($pwd . getConf('SaltKey'))) {
             return false;
         }
 
