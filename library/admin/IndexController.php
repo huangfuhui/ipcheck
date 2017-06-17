@@ -13,7 +13,7 @@ class IndexController extends BaseController
 
         // 未登录用户或登录过期跳转至登录界面
         if ($this->action != 'login' && !$this->isLogin) {
-            header('Location:' . $this->ipInfo['SCRIPT_NAME'] . '?a=login');
+            redirect($this->ipInfo['SCRIPT_NAME'] . '?a=login');
         }
     }
 
@@ -32,7 +32,7 @@ class IndexController extends BaseController
     {
         // 如果用户已经登录则跳转至首页
         if ($this->isLogin) {
-            $this->index();
+            redirect($this->ipInfo['SCRIPT_NAME'] . '?a=index');
         }
 
         $this->display('login');
