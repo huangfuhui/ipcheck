@@ -98,7 +98,9 @@ function session($key, $value = '')
     }
 
     // 开启session
-    session_start();
+    if (!isset($_SESSION)) {
+        session_start();
+    }
 
     if ('' === $value) {                    // 获取session
         if (isset($_SESSION[$key])) {
@@ -110,5 +112,16 @@ function session($key, $value = '')
         unset($_SESSION[$key]);
     } else {                                // 设置session
         $_SESSION[$key] = $value;
+    }
+}
+
+/**
+ * 重定向函数
+ * @param $url 需要重定向的URL
+ */
+function redirect($url)
+{
+    if (!empty($url)) {
+        header('Location:' . $url);
     }
 }
