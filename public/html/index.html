@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="<?php echo self::$CSS_PATH; ?>index.css"/>
+    <script type="text/javascript" src="<?php echo self::$JS_PATH; ?>echarts.min.js"></script>
+    <title>IpCheck|后台管理</title>
+</head>
+<body>
+<div class="head">
+    <h2>Ipcheck 后台管理</h2>
+    <span>Current IP: 192.168.0.1</span>
+</div>
+
+<div class="body">
+    <div class="body_left">
+        <ul class="menu">
+            <li>
+                <a href="admin.php?a=recentRecord">最新记录</a>
+            </li>
+            <li>
+                <a href="admin.php?a=totalRecord">总体记录</a>
+            </li>
+            <li>
+                <a href="admin.php?a=accessCount">访问统计</a>
+            </li>
+            <li>
+                <a href="admin.php?a=banRecord">访问禁止</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="body_right">
+        <?php echo $html_body; ?>
+    </div>
+</div>
+
+<div class="foot">
+    <span>Copyright &copy; 2017 <a href="https://github.com/Hfhui/ipcheck.git">IpCheck</a>. All rights reserved. </span><br/>
+    <span>Contact us by mail: huangfuhui@outlook.com</span>
+</div>
+</body>
