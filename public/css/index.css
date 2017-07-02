@@ -97,6 +97,32 @@
 
 /********************************主体部分样式<结束>*********************************/
 
+/*****************************禁止访问主体样式<开始>******************************/
+.ban_record_example {
+    color: gray;
+    float: left;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+.ban_record_example div {
+    margin-top: 10px;
+    border: 1px lightgray solid;
+    padding: 5px;
+}
+
+.ban_record_text {
+    float: left;
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+.ban_record_text input {
+    margin-left: 10px;
+}
+
+/*****************************禁止访问主体样式<结束>******************************/
+
 /********************************页脚样式<开始>*********************************/
 .foot {
     clear: both;
