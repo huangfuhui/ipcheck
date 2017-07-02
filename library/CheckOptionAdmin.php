@@ -9,6 +9,18 @@ interface CheckOptionAdmin
 {
 
     /**
+     * 禁用IP
+     * @param array $ips 被禁用的IP数组
+     */
+    function banIP($ips);
+
+    /**
+     * 获取禁用IP列表
+     * @return string
+     */
+    function getBanIpList();
+
+    /**
      * 判断当前IP是否登录
      * @return array|bool 如果用户已经登录则返回包含用户ID或唯一标识的数组，未登录则返回false
      */
