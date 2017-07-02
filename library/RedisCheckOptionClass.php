@@ -60,7 +60,7 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
      * 更新当前IP的访问次数
      *
      * 数据库：0
-     * 键：ip:access_times | 属性：IP | 值：+1 | 类型：set
+     * 键：ip:access_times | 属性：IP | 值：+1 | 类型：sort set
      */
     public function recordAccessTimes()
     {
@@ -105,12 +105,22 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     }
 
     /**
+     * 判断是否是被禁IP
+     * @param string $ip
+     * @return bool 是则返回true，否则返回false
+     */
+    public function isBanIP($ip)
+    {
+        // TODO: Implement isBanIP() method.
+    }
+
+    /**
      * 记录当前IP访问的有效性
      * @param bool $validity true表示有效，false表示无效
      *
      * 数据库：0
-     * 键：ip:effective_access | 属性：date('y-m-d', time()) | 值：+1 | 类型：set
-     * 键：ip:invalid_access   | 属性：date('y-m-d', time()) | 值：+1 | 类型：set
+     * 键：ip:effective_access | 属性：date('y-m-d', time()) | 值：+1 | 类型：sort set
+     * 键：ip:invalid_access   | 属性：date('y-m-d', time()) | 值：+1 | 类型：sort set
      */
     public function recordAccessValidity($validity = true)
     {
@@ -131,6 +141,44 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     }
 
 //--------------------------------接口CheckOptionAdmin实现--------------------------------------
+
+    /**
+     * 禁用IP
+     * @param array $ips 被禁用的IP数组
+     *
+     * 数据库2
+     * 键：ip:ban | 属性：IP  | 值：0  | 类型：sort set
+     */
+    public function banIP($ips)
+    {
+        // 选择2号数据库
+        $this->redis->select(2);
+        $this->redis->delete('ip:ban_list');
+
+        if (!is_array($ips)) {
+            return;
+        }
+
+        // 将禁用IP添加至有序集合
+        foreach ($ips as $value) {
+            empty($value) ? '' : $this->redis->zAdd('ip:ban_list', 0, trim($value));
+        }
+    }
+
+    /**
+     * 获取禁用IP列表
+     * @return string
+     */
+    public function getBanIpList()
+    {
+        $this->redis->select(2);
+        $ban_list = $this->redis->zRange('ip:ban_list', 0, -1);
+        $res = '';
+        foreach ($ban_list as $value) {
+            $res .= $value . PHP_EOL;
+        }
+        return $res;
+    }
 
     /**
      * 判断当前用户是否登录成功
