@@ -24,6 +24,13 @@ interface checkOption
     function checkFrequency();
 
     /**
+     * 判断是否是被禁IP
+     * @param string $ip
+     * @return bool 是则返回true，否则返回false
+     */
+    function isBanIP($ip);
+
+    /**
      * 记录当前IP访问的有效性
      * @param bool $validity true表示有效，false表示无效
      */
