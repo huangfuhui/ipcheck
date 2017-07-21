@@ -151,17 +151,17 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
      */
     public function banIP($ips)
     {
-        // 选择2号数据库
-        $this->redis->select(2);
-        $this->redis->delete('ip:ban_list');
-
         if (!is_array($ips)) {
             return;
         }
 
+        // 选择2号数据库
+        $this->redis->select(2);
+        $this->redis->delete('ip:ban_list');
+
         // 将禁用IP添加至有序集合
         foreach ($ips as $value) {
-            empty($value) ? '' : $this->redis->zAdd('ip:ban_list', 0, trim($value));
+            empty($value) ? '' : $this->redis->sAdd('ip:ban_list', trim($value));
         }
     }
 
@@ -172,7 +172,7 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     public function getBanIpList()
     {
         $this->redis->select(2);
-        $ban_list = $this->redis->zRange('ip:ban_list', 0, -1);
+        $ban_list = $this->redis->sMembers('ip:ban_list');
         $res = '';
         foreach ($ban_list as $value) {
             $res .= $value . PHP_EOL;
