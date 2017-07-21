@@ -62,8 +62,7 @@
 /********************************主体部分样式<开始>*********************************/
 .body_right {
     border: 1px solid lightgray;
-    float: left;
-    margin-left: 80px;
+    float: right;
     width: 670px;
     height: 430px;
 }
