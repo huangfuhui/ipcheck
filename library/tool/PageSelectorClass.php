@@ -65,7 +65,11 @@ HTML;
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $url = $this->renderPageURL($i);
-            $pageForSpan .= '<a href="' . $url . '"><span>' . $i . '</span></a>';
+            if ($i == $this->currentPage) {
+                $pageForSpan .= '<a class="page_url selected_url" href="' . $url . '"><span>' . $i . '</span></a>';
+            } else {
+                $pageForSpan .= '<a class="page_url" href="' . $url . '"><span>' . $i . '</span></a>';
+            }
         }
 
         $firstPageURL = $this->renderPageURL(1);
@@ -76,7 +80,7 @@ HTML;
             : $frontPageUrl = $this->renderPageURL($this->currentPage);
 
         $pageHTML .= <<<HTML
-    <a href="$firstPageURL"><span>首页</span></a><a href="$frontPageUrl"><span>上一页</span></a>$pageForSpan<a href="$nextPageUrl"><span>下一页</span></a><a href="$lastPageUrl"><span>尾页</span></a>
+    <a href="$firstPageURL"><span>首 页</span></a><a href="$frontPageUrl"><span>上一页</span></a>$pageForSpan<a href="$nextPageUrl"><span>下一页</span></a><a href="$lastPageUrl"><span>尾 页</span></a>
 </div>
     <div class="show_page_info"><span>总共 $this->pageCount 页, 当前 $this->currentPage 页</span></div>
 </div>
