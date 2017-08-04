@@ -5,6 +5,8 @@
 
 namespace Ipcheck\Admin\Controller;
 
+use Ipcheck\Tool;
+
 class IndexController extends BaseController
 {
     public function __construct()
@@ -55,10 +57,10 @@ HTML;
 
         // 统计最新的IP访问记录数目
         $list_count = $this->DBHandler->redis->lLen('ip:access_record');
-        if (empty($page) || !is_numeric($page) || $page <= 0) {
+        if (empty($this->dataGet['page']) || !is_numeric($this->dataGet['page']) || $this->dataGet['page'] <= 0) {
             $page = 0;
         } else {
-            $page -= 1;
+            $page = $this->dataGet['page'] - 1;
         }
 
         // 获取最近访问的IP信息
@@ -94,7 +96,11 @@ HTML;
 </table>
 HTML;
 
-        $this->display('index', array('html_body' => $htmlBody));
+        // 数据分页
+        $pageSelectorTool = new Tool\PageSelectorClass('', ceil($list_count / 15));
+        $htmlBody .= $pageSelectorTool->getSelector($page + 1);
+
+        $this->display('index', array('html_body' => $htmlBody, 'menu' => 'recentRecord'));
     }
 
     /**
@@ -115,10 +121,10 @@ HTML;
         // 获取总记录数
         $record_count = $this->DBHandler->redis->zCard('ip:access_times');
         // 获取页码
-        if (empty($page) || !is_numeric($page) || $page <= 0) {
+        if (empty($this->dataGet['page']) || !is_numeric($this->dataGet['page']) || $this->dataGet['page'] <= 0) {
             $page = 0;
         } else {
-            $page -= 1;
+            $page = $this->dataGet['page'] - 1;
         }
 
         // 总访问次数
@@ -153,7 +159,11 @@ HTML;
 </table>
 HTML;
 
-        $this->display('index', array('html_body' => $htmlBody));
+        // 数据分页
+        $pageSelector = new Tool\PageSelectorClass('', ceil($record_count / 15));
+        $htmlBody .= $pageSelector->getSelector($page + 1);
+
+        $this->display('index', array('html_body' => $htmlBody, 'menu' => 'totalRecord'));
     }
 
     /**
@@ -217,7 +227,7 @@ HTML;
 </div>
 HTML;
 
-        $this->display('index', array('html_body' => $htmlBody));
+        $this->display('index', array('html_body' => $htmlBody, 'menu' => 'accessCount'));
     }
 
     /**
@@ -250,6 +260,6 @@ Access Denied Example :<br />
 </div>
 HTML;
 
-        $this->display('index', array('html_body' => $htmlBody));
+        $this->display('index', array('html_body' => $htmlBody, 'menu' => 'banRecord'));
     }
 }
