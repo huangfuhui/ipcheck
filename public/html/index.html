@@ -16,16 +16,16 @@
     <div class="body_left">
         <ul class="menu">
             <li>
-                <a href="admin.php?a=recentRecord">最新记录</a>
+                <a href="admin.php?a=recentRecord" <?php if($htmlData['menu'] == 'recentRecord') echo 'class="menu_select"'; ?>>最新记录</a>
             </li>
             <li>
-                <a href="admin.php?a=totalRecord">总体记录</a>
+                <a href="admin.php?a=totalRecord" <?php if($htmlData['menu'] == 'totalRecord') echo 'class="menu_select"'; ?>>总体记录</a>
             </li>
             <li>
-                <a href="admin.php?a=accessCount">访问统计</a>
+                <a href="admin.php?a=accessCount" <?php if($htmlData['menu'] == 'accessCount') echo 'class="menu_select"'; ?>>访问统计</a>
             </li>
             <li>
-                <a href="admin.php?a=banRecord">访问禁止</a>
+                <a href="admin.php?a=banRecord" <?php if($htmlData['menu'] == 'banRecord') echo 'class="menu_select"'; ?>>访问禁止</a>
             </li>
         </ul>
     </div>
@@ -36,7 +36,7 @@
 </div>
 
 <div class="foot">
-    <span>Copyright &copy; 2017 <a href="https://github.com/Hfhui/ipcheck.git">IpCheck</a>. All rights reserved. </span><br/>
+    <span>Copyright &copy; 2017 <a href="https://github.com/huangfuhui/ipcheck.git">IpCheck</a>. All rights reserved. </span><br/>
     <span>Contact us by mail: huangfuhui@outlook.com</span>
 </div>
 </body>
