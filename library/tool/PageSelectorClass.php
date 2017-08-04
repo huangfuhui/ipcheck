@@ -22,6 +22,11 @@ class PageSelectorClass
         $this->appendParam = $appendParam;
     }
 
+    /**
+     * 渲染输出页码选择器
+     * @param int $selectPage
+     * @return string
+     */
     public function getSelector($selectPage = 1)
     {
         // 如果选择的页码大于总页码则默认取最大的页码数，反之则取第一页
@@ -76,7 +81,7 @@ HTML;
     <div class="show_page_info"><span>总共 $this->pageCount 页, 当前 $this->currentPage 页</span></div>
 </div>
 HTML;
-        echo $pageHTML;
+        return $pageHTML;
     }
 
     /**
