@@ -7,6 +7,7 @@
 namespace Ipcheck;
 
 use Ipcheck\Tool\InitializeClass;
+use Ipcheck\Tool\DataRenderClass;
 
 class IpcheckClass extends InitializeClass
 {
@@ -31,10 +32,14 @@ class IpcheckClass extends InitializeClass
         // 检测当前IP的访问频率，如果大于用户设置的访问间隔那就采取对应的措施，同时记录访问的有效性
         $res = $this->DBHandler->checkFrequency();
         if ($res) {
-            // TODO:返回禁止访问的措施
-
+            // 记录访问的有效性
             $this->DBHandler->recordAccessValidity(false);
+
+            // 返回禁止访问页面
+            $dataRenderClass = new DataRenderClass();
+            $dataRenderClass->display('ACCESS_DENIED');
         } else {
+            // 记录访问的有效性
             $this->DBHandler->recordAccessValidity(true);
         }
 
