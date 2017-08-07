@@ -14,4 +14,8 @@ return array(
     'DBUserName' => '',                             // 数据库用户名
     'DBPassword' => '',                             // 数据库密码
     'SaltKey' => 'Ipcheck',                         // 数据库加密盐值
+
+    // 系统日志配置
+    'LogPath' => './',                              // 日志路径
+    'LogName' => 'ipcheck.log',                     // 日志名称
 );
