@@ -11,10 +11,14 @@ use Ipcheck\Tool\DataRenderClass;
 
 class IpcheckClass extends InitializeClass
 {
-    private $DBHandler = null;            // 数据库操作对象
+    private $DBHandler = null;          // 数据库操作对象
+
+    private $TimeUsed = 0;              // 记录一次请求所花费的时间，单位为毫秒
 
     public function __construct()
     {
+        $this->TimeUsed = microtime(true);
+
         // 获取数据库操作对象
         $this->DBHandler = (new DBHandlerFactory())->getDBHandler();
 
@@ -42,6 +46,10 @@ class IpcheckClass extends InitializeClass
             // 记录访问的有效性
             $this->DBHandler->recordAccessValidity(true);
         }
+
+        // 记录一次请求使用时间
+        $this->TimeUsed = round((microtime(true) - $this->TimeUsed) * 1000, 2);
+        $this->DBHandler->recordTimeUsed($this->TimeUsed);
 
         // 关闭当前数据库连接
         $this->DBHandler->closeConnection();

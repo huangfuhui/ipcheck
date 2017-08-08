@@ -37,6 +37,12 @@ interface checkOption
     function recordAccessValidity($validity = true);
 
     /**
+     * 记录一次请求所使用的时间，单位毫秒
+     * @param int $timeUsed
+     */
+    function recordTimeUsed($timeUsed = 0);
+
+    /**
      * 关闭数据库连接
      */
     function closeConnection();

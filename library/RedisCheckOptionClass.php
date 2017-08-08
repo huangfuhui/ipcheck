@@ -18,6 +18,29 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         $this->ipInfo = $ipInfo;
     }
 
+//-------------------------------Redis数据库使用记录------------------------------
+    /**
+     * 数据库编号|   使用备注
+     * ---------------------------------------------------------
+     * 0        |   ip:access_record、ip:access_times、ip:effective_access、ip:invalid_access
+     * 1        |   专门用于检测IP访问频率
+     * 2        |   ip:ban_list
+     * 3        |   记录一次请求Redis所耗费时间
+     * 4        |
+     * 5        |
+     * 6        |
+     * 7        |
+     * 8        |
+     * 9        |
+     * 10       |
+     * 11       |
+     * 12       |
+     * 13       |
+     * 14       |   后台用户日志库
+     * 15       |   后台用户信息库
+     */
+//-------------------------------Redis数据库使用记录------------------------------
+
 //----------------------------------接口CheckOption实现----------------------------------------
 
     /**
@@ -133,6 +156,20 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     }
 
     /**
+     * 记录一次请求Redis操作耗费时间
+     * @param int $timeUsed
+     *
+     * 数据库：3
+     * 键：date('Y:m:d H:i', time())  | 值：一次请求Redis耗费时长   | 类型：list
+     */
+    public function recordTimeUsed($timeUsed = 0)
+    {
+        $this->redis->select(3);
+        $key = date('Y:m:d H:00:00', time());
+        $this->redis->lPush($key, $timeUsed);
+    }
+
+    /**
      * 关闭Redis数据库连接
      */
     public function closeConnection()
@@ -240,7 +277,6 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 
     public function recordAdminLog($msg)
     {
-        // TODO: Implement recordAdminLog() method.
         // 选择14号数据库
         $this->redis->select(14);
         // 存放当前账号访问日志
