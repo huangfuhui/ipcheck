@@ -132,9 +132,15 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
      * @param string $ip
      * @return bool 是则返回true，否则返回false
      */
-    public function isBanIP($ip)
+    public function isBanIP($ip = '')
     {
-        // TODO: Implement isBanIP() method.
+        empty($ip) ? $ip = $this->ipInfo['REMOTE_ADDR'] : null;
+        if (empty($ip)) {
+            return true;
+        }
+
+        $this->redis->select(2);
+        return $this->redis->sIsMember('ip:ban_list', $ip);
     }
 
     /**
@@ -184,7 +190,7 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
      * @param array $ips 被禁用的IP数组
      *
      * 数据库2
-     * 键：ip:ban | 属性：IP  | 值：0  | 类型：sort set
+     * 键：ip:ban | 属性：IP  | 值：0  | 类型：set
      */
     public function banIP($ips)
     {
@@ -275,6 +281,10 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         return true;
     }
 
+    /**
+     * 记录后台用户登录信息
+     * @param mixed $msg
+     */
     public function recordAdminLog($msg)
     {
         // 选择14号数据库

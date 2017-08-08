@@ -44,7 +44,6 @@ interface CheckOptionAdmin
     /**
      * 记录系统后台操作日志信息
      * @param mixed $msg 需要记录的日志信息
-     * @return bool
      */
     function recordAdminLog($msg);
 

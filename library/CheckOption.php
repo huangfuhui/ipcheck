@@ -28,7 +28,7 @@ interface checkOption
      * @param string $ip
      * @return bool 是则返回true，否则返回false
      */
-    function isBanIP($ip);
+    function isBanIP($ip = '');
 
     /**
      * 记录当前IP访问的有效性
