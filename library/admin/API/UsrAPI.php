@@ -26,6 +26,9 @@ class UsrAPI extends BaseAPI
         if ($this->DBHandler->login($usr, $pwd)) {
             $this->result['code'] = 1;
             $this->result['data'] = 'admin.php?c=index';
+
+            // 记录用户登录行为
+            $this->DBHandler->recordAdminLog('');
         } else {
             $this->result['data'] = '账号或密码错误！';
         }

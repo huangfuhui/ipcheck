@@ -290,7 +290,7 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         // 选择14号数据库
         $this->redis->select(14);
         // 存放当前账号访问日志
-        $this->redis->lPush('log:login:admin', $this->ipInfo['REMOTE_ADDR'] . ':' . $this->ipInfo['REQUEST_TIME']);
+        $this->redis->lPush('log:login:admin', $this->ipInfo['REMOTE_ADDR'] . ':' . $this->ipInfo['REQUEST_TIME'] . '; msg:' . $msg);
     }
 
     public function modifyPassword($oldPwd, $newPwd)
