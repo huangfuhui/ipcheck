@@ -97,7 +97,7 @@ HTML;
 HTML;
 
         // 数据分页
-        $pageSelectorTool = new Tool\PageSelectorClass('', ceil($list_count / 15));
+        $pageSelectorTool = new Tool\PageSelectorClass('?a=recentRecord', ceil($list_count / 15), 'page', true);
         $htmlBody .= $pageSelectorTool->getSelector($page + 1);
 
         $this->display('index', array('html_body' => $htmlBody, 'menu' => 'recentRecord'));
@@ -160,7 +160,7 @@ HTML;
 HTML;
 
         // 数据分页
-        $pageSelector = new Tool\PageSelectorClass('', ceil($record_count / 15));
+        $pageSelector = new Tool\PageSelectorClass('?a=totalRecord', ceil($record_count / 15), 'page', true);
         $htmlBody .= $pageSelector->getSelector($page + 1);
 
         $this->display('index', array('html_body' => $htmlBody, 'menu' => 'totalRecord'));
