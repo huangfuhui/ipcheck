@@ -20,7 +20,7 @@ class IpcheckClass extends InitializeClass
         $this->TimeUsed = microtime(true);
 
         // 获取数据库操作对象
-        $this->DBHandler = (new DBHandlerFactory())->getDBHandler();
+        $this->DBHandler = (new DBHandlerFactory($this->getIpInfo()))->getDBHandler();
 
         parent::__construct();
     }

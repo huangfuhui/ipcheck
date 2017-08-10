@@ -6,20 +6,18 @@
 
 namespace Ipcheck;
 
-use Ipcheck\Tool\InitializeClass;
-
 class DBHandlerFactory
 {
     private $DBType = '';
     private $ipInfo = array();
 
-    public function __construct()
+    public function __construct($ipInfo)
     {
         // 获取数据库类型，默认是Redis
         $this->DBType = getConf('DBType');
         empty($this->DBType) && $this->DBType = 'Redis';
 
-        $this->ipInfo = (new InitializeClass())->getIpInfo();
+        $this->ipInfo = $ipInfo;
     }
 
     /**
