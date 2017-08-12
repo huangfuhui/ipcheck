@@ -30,7 +30,7 @@ function getConf($configName = '')
  * @param boolean $echo 是否输出 默认为True 如果为false 则返回输出字符串
  * @param string $label 标签 默认为空
  * @param boolean $strict 是否严谨 默认为true
- * @return void|string
+ * @return mixed
  */
 function dump($var, $echo = true, $label = null, $strict = true)
 {
@@ -54,8 +54,9 @@ function dump($var, $echo = true, $label = null, $strict = true)
     if ($echo) {
         echo($output);
         return null;
-    } else
+    } else {
         return $output;
+    }
 }
 
 /**
@@ -65,6 +66,33 @@ function dump($var, $echo = true, $label = null, $strict = true)
 function getTimeUnitAsTimestamp()
 {
     $timeUnit = getConf('TimeUnit');
+    switch (strtolower($timeUnit)) {
+        case 'm' : {
+            $timeUnit = 60;
+        }
+            break;
+        case 'h' : {
+            $timeUnit = 3600;
+        }
+            break;
+        case 'd' : {
+            $timeUnit = 86400;
+        }
+            break;
+        default : {
+            $timeUnit = 60;
+        }
+    }
+    return $timeUnit;
+}
+
+/**
+ * 将时间单位转化成以时间戳的方式表示
+ * @param $timeUnit
+ * @return int
+ */
+function getTimestampForTimeUnit($timeUnit = 0)
+{
     switch (strtolower($timeUnit)) {
         case 'm' : {
             $timeUnit = 60;
@@ -113,11 +141,13 @@ function session($key, $value = '')
     } else {                                // 设置session
         $_SESSION[$key] = $value;
     }
+
+    return '';
 }
 
 /**
  * 重定向函数
- * @param $url 需要重定向的URL
+ * @param string $url 需要重定向的URL
  */
 function redirect($url)
 {
