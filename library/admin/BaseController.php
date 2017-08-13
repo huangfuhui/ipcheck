@@ -25,8 +25,10 @@ class BaseController extends InitializeClass
     {
         parent::__construct();
 
+        $this->ipInfo = self::$IPINFOS;
+
         // 获取数据库操作对象
-        $this->DBHandler = (new DBHandlerFactory())->getDBHandler();
+        $this->DBHandler = (new DBHandlerFactory($this->ipInfo))->getDBHandler();
 
         // 判断是否登录成功，并标记用户
         $res = $this->DBHandler->isLogin();
@@ -34,9 +36,6 @@ class BaseController extends InitializeClass
             $this->isLogin = true;
             $this->usrName = $res['usr'];
         }
-
-        $this->ipInfo = self::$IPINFOS;
-
 
         empty($_GET['a']) ? $this->action = 'index' : $this->action = $_GET['a'];
 
