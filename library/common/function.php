@@ -6,9 +6,10 @@
 /**
  * 获取系统配置文件，并返回目标配置值
  * @param string $configName 配置名称
+ * @param boolean $must 是否要求参数存在且非空
  * @return string 配置值
  */
-function getConf($configName = '')
+function getConf($configName = '', $must = false)
 {
     if (empty($configName)) {
         return '';
@@ -20,7 +21,11 @@ function getConf($configName = '')
     if (key_exists($configName, $configs)) {
         return $configs[$configName];
     } else {
-        return '';
+        if ($must) {
+            // TODO:抛出参数找不到的相关异常
+        } else {
+            return '';
+        }
     }
 }
 
