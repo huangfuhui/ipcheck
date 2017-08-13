@@ -237,7 +237,7 @@ HTML;
     {
         if (!empty($_POST['ips'])) {
             $ips = explode(PHP_EOL, trim($_POST['ips']));
-            $this->DBHandler->banIP($ips);
+            $this->DBHandler->banIPs($ips);
         }
         $banIpList = $this->DBHandler->getBanIpList();
 

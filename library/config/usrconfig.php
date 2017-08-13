@@ -13,15 +13,14 @@ return array(
     // 配置拦截器(Interceptor)
     'UseInterceptor' => true,                   // 默认启动拦截器
     'AutoAddToBlackList' => false,              // 是否自动将拦截下来的IP加入黑名单
-    'RuleChain' => array(                       // 过滤规则链，可以多条规则配合使用，默认使用'RuleA+RuleB+RuleC'
-        'RuleA',
+    'RuleChain' => array(                       // 过滤规则链，可以多条规则配合使用，默认使用'RuleA+RuleB'，
+        'RuleA',                                // 过滤次序从规则链的左边到规则链的右边，一旦有一条规则链无法通过则直接拦截下来，不再往下执行
         'RuleB',
-        'RuleC',
     ),
 
     // 配置过滤规则(FilterRules)
     'RuleA' => array(                           // 规则A，单位时间内触发基本访问规则(BaseAccessRule)N次，则触发拦截器
-        'AccessFrequency' => 10,                // 单位时间内允许触发系统基本访问规则(BaseAccessRule)的次数，默认'5'
+        'AccessFrequency' => 10,                // 单位时间内允许触发系统基本访问规则(BaseAccessRule)的次数，默认'10'
         'TriggerTimeUnit' => 'h',               // 时间单位，可选：d-天 h-时，不区分大小写，默认'h'
     ),
     'RuleB' => array(                           // 规则B，单位时间内访问次数超过一定数量则触发拦截器

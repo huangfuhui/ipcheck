@@ -9,10 +9,16 @@ interface CheckOptionAdmin
 {
 
     /**
-     * 禁用IP
+     * 禁用一组IP
      * @param array $ips 被禁用的IP数组
      */
-    function banIP($ips);
+    function banIPs($ips);
+
+    /**
+     * 禁用单个IP
+     * @param string $ip 被禁用的IP
+     */
+    function banIP($ip);
 
     /**
      * 获取禁用IP列表

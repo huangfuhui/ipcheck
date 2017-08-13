@@ -43,6 +43,13 @@ interface checkOption
     function recordTimeUsed($timeUsed = 0);
 
     /**
+     * 拦截器
+     * @param string $rule 拦截规则
+     * @return boolean
+     */
+    function interceptor($rule);
+
+    /**
      * 关闭数据库连接
      */
     function closeConnection();

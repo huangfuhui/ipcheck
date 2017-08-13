@@ -9,8 +9,10 @@ namespace Ipcheck;
 
 class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 {
-    public $redis = '';            // 数据库对象
-    public $ipInfo = '';           // 访问者信息
+    public $redis = '';                         // 数据库对象
+    public $ipInfo = '';                        // 访问者信息
+
+    private $violateBaseAccessRule = false;     // 当前IP是否违反基本访问规则
 
     public function __construct($redis, $ipInfo)
     {
@@ -22,10 +24,10 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     /**
      * 数据库编号|   使用备注
      * ---------------------------------------------------------
-     * 0        |   ip:access_record、ip:access_times、ip:effective_access、ip:invalid_access
+     * 0        |   专用于记录来访IP的信息  ip:access_record、ip:access_times、ip:effective_access、ip:invalid_access
      * 1        |   专门用于检测IP访问频率
      * 2        |   ip:ban_list
-     * 3        |   记录一次请求Redis所耗费时间
+     * 3        |   拦截器专用
      * 4        |
      * 5        |
      * 6        |
@@ -35,7 +37,7 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
      * 10       |
      * 11       |
      * 12       |
-     * 13       |
+     * 13       |   系统监控专用
      * 14       |   后台用户日志库
      * 15       |   后台用户信息库
      */
@@ -119,6 +121,8 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
             $this->redis->lTrim($this->ipInfo['REMOTE_ADDR'], 0, $accessFrequency - 1);
             // 4.3如果当前IP在规定的时间内访问频率超出标准，则返回true
             if ($this->ipInfo['REQUEST_TIME'] - $last_time < getTimeUnitAsTimestamp()) {
+                // 标记当前IP违反基本访问规则
+                $this->violateBaseAccessRule = true;
                 return true;
             }
         }
@@ -165,14 +169,54 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
      * 记录一次请求Redis操作耗费时间
      * @param int $timeUsed
      *
-     * 数据库：3
+     * 数据库：13
      * 键：date('Y:m:d H:i', time())  | 值：一次请求Redis耗费时长   | 类型：list
      */
     public function recordTimeUsed($timeUsed = 0)
     {
-        $this->redis->select(3);
+        $this->redis->select(13);
         $key = date('Y:m:d H:00:00', time());
         $this->redis->lPush($key, $timeUsed);
+    }
+
+    /**
+     * 拦截器
+     * @param string $rule
+     * @return bool
+     */
+    public function interceptor($rule)
+    {
+        $res = false;
+        $autoAddToBlackList = getConf('AutoAddToBlackList');
+
+        // 执行规则过滤，拦截违规IP
+        switch ($rule) {
+            case 'RuleA': {
+                $res = $this->verifyRuleA();
+            }
+                break;
+            case 'RuleB': {
+                $res = $this->verifyRuleB();
+            }
+                break;
+            case 'RuleC': {
+                $res = $this->verifyRuleC();
+            }
+                break;
+            case 'RuleD': {
+                $res = $this->verifyRuleD();
+            }
+                break;
+            default : {
+            }
+        }
+
+        // 判断是否开启自动拉入黑名单开关
+        if ($res && $autoAddToBlackList) {
+            $this->banIP($this->ipInfo['REMOTE_ADDR']);
+        }
+
+        return $res;
     }
 
     /**
@@ -186,13 +230,13 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
 //--------------------------------接口CheckOptionAdmin实现--------------------------------------
 
     /**
-     * 禁用IP
+     * 禁用一组IP
      * @param array $ips 被禁用的IP数组
      *
      * 数据库2
-     * 键：ip:ban | 属性：IP  | 值：0  | 类型：set
+     * 键：ip:ban_list | 属性：IP  | 值：0  | 类型：set
      */
-    public function banIP($ips)
+    public function banIPs($ips)
     {
         if (!is_array($ips)) {
             return;
@@ -206,6 +250,25 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         foreach ($ips as $value) {
             empty($value) ? '' : $this->redis->sAdd('ip:ban_list', trim($value));
         }
+    }
+
+    /**
+     * 禁用单个IP
+     * @param string $ip
+     *
+     * 数据库：2
+     * 键：ip:ban_list | 属性：IP  | 值：0  | 类型：set
+     */
+    public function banIP($ip)
+    {
+        if (empty($ip)) {
+            return;
+        }
+
+        // 选择2号数据库
+        $this->redis->select(2);
+        // 将禁用IP添加至黑名单
+        $this->redis->sAdd('ip:ban_list', trim($ip));
     }
 
     /**
@@ -296,5 +359,142 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     public function modifyPassword($oldPwd, $newPwd)
     {
         // TODO: Implement modifyPassword() method.
+    }
+
+//---------------------------------------------拦截规则逻辑实现-----------------------------------------------------
+
+    /**
+     * RuleA，单位时间内触发基本访问规则(BaseAccessRule)N次，则返回true
+     * @return bool
+     *
+     * 数据库：3
+     * 键：'RuleA:' . IP  | 值：当前IP请求的时间戳  | 类型：list
+     */
+    private function verifyRuleA()
+    {
+        // 选择3号数据库
+        $this->redis->select(3);
+
+        // 读取规则元素
+        $ruleA = getConf('RuleA', true);
+        $accessFrequency = (empty($ruleA['AccessFrequency']) ? 10 : $ruleA['AccessFrequency']);
+        $triggerTimeUnit = empty(strtolower($ruleA['TriggerTimeUnit'])) ? 'h' : strtolower($ruleA['TriggerTimeUnit']);
+
+        // 判断是否违反BaseAccessRule
+        if ($this->violateBaseAccessRule) {
+            // 更新当前IP违反信息
+            $this->redis->lPush('RuleA:' . $this->ipInfo['REMOTE_ADDR'], $this->ipInfo['REQUEST_TIME']);
+            // 获取当前IP违反次数
+            $violateTimes = $this->redis->lLen('RuleA:' . $this->ipInfo['REMOTE_ADDR']);
+
+            // 如果当前IP违反的次数大于规则限定次数则判断是否违反规则
+            if ($violateTimes > $accessFrequency) {
+                $lastTime = $this->redis->lIndex('RuleA:' . $this->ipInfo['REMOTE_ADDR'], -1);
+                // 如果第一次和最后一次触发规则的时间间隔小于规则定义的时间间隔则是违反了RuleA
+                if ($this->ipInfo['REQUEST_TIME'] - $lastTime < getTimestampForTimeUnit($triggerTimeUnit)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * RuleB，单位时间内访问次数超过一定数量则触发拦截器
+     * @return bool
+     *
+     * 数据库：3
+     * 键：'RuleB:' . IP  | 值：当前IP请求的时间戳  | 类型：list
+     */
+    private function verifyRuleB()
+    {
+        // 选择3号数据库
+        $this->redis->select(3);
+
+        // 读取规则元素
+        $ruleB = getConf('RuleB', true);
+        $accessFrequency = (empty($ruleB['AccessFrequency']) ? 100 : $ruleB['AccessFrequency']);
+        $triggerTimeUnit = empty(strtolower($ruleB['TriggerTimeUnit'])) ? 'h' : strtolower($ruleB['TriggerTimeUnit']);
+
+        // 更新当前IP的访问记录
+        $this->redis->lPush('RuleB:' . $this->ipInfo['REMOTE_ADDR'], $this->ipInfo['REQUEST_TIME']);
+        // 获取当前IP的记录数目
+        $accessTimes = $this->redis->lLen('RuleB:' . $this->ipInfo['REMOTE_ADDR']);
+
+        // 如果当前IP访问的次数大于规则限定次数则判断是否违反规则
+        if ($accessTimes > $accessFrequency) {
+            $lastTime = $this->redis->lIndex('RuleB:' . $this->ipInfo['REMOTE_ADDR'], -1);
+            // 如果第一次和最后一次访问的时间间隔小于规则定义的时间间隔则是违反了RuleB
+            if ($this->ipInfo['REQUEST_TIME'] - $lastTime < getTimestampForTimeUnit($triggerTimeUnit)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * RuleC，单位时间内某一受保护的URL访问次数超过一定数量则触发拦截器
+     * @return bool
+     *
+     * 数据库：3
+     * 键：'RuleC:' . URL . ':' . IP  | 值：当前IP访问的时间戳  | 类型：list
+     */
+    private function verifyRuleC()
+    {
+        // 选择3号数据库
+        $this->redis->select(3);
+
+        // 读取规则元素
+        $RuleC = getConf('RuleC', true);
+        $accessFrequency = empty($RuleC['AccessFrequency']) ? 3 : $RuleC['AccessFrequency'];
+        $triggerTimeUnit = empty(strtolower($RuleC['TriggerTimeUnit'])) ? 'm' : $RuleC['TriggerTimeUnit'];
+        $urls = $RuleC['URLS'];
+
+        // 判断当前请求的URL是否在命中规则里面
+        if (empty($urls) || !in_array($this->ipInfo['SCRIPT_NAME'], $urls)) {
+            return false;
+        }
+
+        $key = 'RuleC:' . $this->ipInfo['SCRIPT_NAME'] . ':' . $this->ipInfo['REMOTE_ADDR'];
+        // 更新当前IP访问信息
+        $this->redis->lPush($key, $this->ipInfo['REQUEST_TIME']);
+        // 读取当前IP访问次数
+        $accessTimes = $this->redis->lLen($key);
+
+        // 如果当前IP访问次数大于规则限定次数则判断是否违反规则
+        if ($accessTimes > $accessFrequency) {
+            $lastTime = $this->redis->lIndex($key, -1);
+            // 如果第一次访问时间和最后一次访问时间小于规则定义的时间间隔则是违反了RuleC
+            if ($this->ipInfo['REQUEST_TIME'] - $lastTime < getTimestampForTimeUnit($triggerTimeUnit)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * RuleD，非白名单内的IP访问受保护的URL则触发拦截器
+     * @return bool
+     */
+    private function verifyRuleD()
+    {
+        // 读取规则元素
+        $ruleD = getConf('RuleD', true);
+        $whiteList = $ruleD['WhiteList'];
+        $urls = $ruleD['URLS'];
+
+        if (empty($whiteList) || empty($urls)) {
+            return false;
+        }
+
+        $requestUrl = $this->ipInfo['SCRIPT_NAME'];
+        if (key_exists($requestUrl, $urls) && in_array($this->ipInfo['REMOTE_ADDR'], $whiteList)) {
+            return false;
+        }
+
+        return true;
     }
 }
