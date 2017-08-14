@@ -27,6 +27,12 @@ interface CheckOptionAdmin
     function getBanIpList();
 
     /**
+     * 获取禁用IP数量
+     * @return int
+     */
+    function getBanIpsCount();
+
+    /**
      * 判断当前IP是否登录
      * @return array|bool 如果用户已经登录则返回包含用户ID或唯一标识的数组，未登录则返回false
      */

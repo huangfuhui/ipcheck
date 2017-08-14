@@ -287,6 +287,17 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
     }
 
     /**
+     * 获取被禁IP数量
+     * @return int
+     */
+    public function getBanIpsCount()
+    {
+        $this->redis->select(2);
+        $ban_list = $this->redis->sMembers('ip:ban_list');
+        return count($ban_list);
+    }
+
+    /**
      * 判断当前用户是否登录成功
      * @return array|bool 如果用户已经登录则返回包含用户ID或唯一标识的数组，未登录则返回false
      */
