@@ -5,6 +5,8 @@
 
 namespace Ipcheck\Tool;
 
+use Ipcheck\Tool\LogClass;
+
 class InitializeClass
 {
     public static $IPINFOS = array();
@@ -21,7 +23,12 @@ class InitializeClass
 
         // 测试能否获取访问者信息
         if (empty($_SERVER['REMOTE_ADDR'])) {
-            // TODO:记录日志——不能获取目标ip地址
+            // 记录日志——不能获取目标ip地址
+            $logArr = array(
+                'ERROR' => '无法获取目标IP地址！'
+            );
+            $logTemplate = LogClass::logTemplate($logArr);
+            LogClass::log($logTemplate);
             exit;
         }
 
