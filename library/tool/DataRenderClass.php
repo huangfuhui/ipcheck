@@ -17,9 +17,9 @@ class DataRenderClass
         $length = strrpos(__FILE__, 'library' . DIRECTORY_SEPARATOR . 'tool' . DIRECTORY_SEPARATOR . 'DataRenderClass.php');
         self::$ROOT = substr(__FILE__, 0, $length);
 
-        self::$HTML_PATH = self::$ROOT . 'public/html/';
-        self::$CSS_PATH = self::$ROOT . 'public/css/';
-        self::$JS_PATH = self::$ROOT . 'public/js/';
+        self::$HTML_PATH = 'public/html/';
+        self::$CSS_PATH = 'public/css/';
+        self::$JS_PATH = 'public/js/';
     }
 
     /**
@@ -31,15 +31,15 @@ class DataRenderClass
     {
         // 空HTML文件则返回指定文件内容
         if (empty($html)) {
-            require self::$HTML_PATH . 'EMPTY.html';
+            require self::$ROOT . self::$HTML_PATH . 'EMPTY.html';
             return;
         }
 
-        $file = self::$HTML_PATH . $html . '.html';
+        $file = self::$ROOT . self::$HTML_PATH . $html . '.html';
         if (file_exists($file)) {
             require $file;
         } else {
-            require self::$HTML_PATH . 'NOT_FOUND.html';
+            require self::$ROOT . self::$HTML_PATH . 'NOT_FOUND.html';
         }
     }
 }
