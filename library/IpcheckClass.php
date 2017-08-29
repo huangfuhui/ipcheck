@@ -35,25 +35,25 @@ class IpcheckClass extends InitializeClass
 
         // 黑名单过滤
         if ($this->DBHandler->isBanIP()) {
-            $res = true;
+            $baseResult = true;
         } else {
             // 检测当前IP的访问频率，如果大于用户设置的访问间隔那就采取对应的措施，同时记录访问的有效性
-            $res = $this->DBHandler->checkFrequency();
+            $baseResult = $this->DBHandler->checkFrequency();
 
             // 判断是否开启拦截器
             if (getConf('UseInterceptor')) {
                 $rules = getConf('RuleChain');
                 // 对IP进行规则链过滤
                 foreach ($rules as $rule) {
-                    $res = $this->DBHandler->interceptor($rule);
-                    if ($res) {
+                    $interceptorResult = $this->DBHandler->interceptor($rule);
+                    if ($interceptorResult) {
                         break;
                     }
                 }
             }
         }
 
-        if ($res) {
+        if ($baseResult || $interceptorResult) {
             // 记录访问的无效性
             $this->DBHandler->recordAccessValidity(false);
 

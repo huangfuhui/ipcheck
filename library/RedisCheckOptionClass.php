@@ -401,6 +401,8 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
             // 如果当前IP违反的次数大于规则限定次数则判断是否违反规则
             if ($violateTimes > $accessFrequency) {
                 $lastTime = $this->redis->lIndex('RuleA:' . $this->ipInfo['REMOTE_ADDR'], -1);
+                // 保留最新的N条记录，方便下次获取间隔内第一次访问时间
+                $this->redis->lTrim('RuleA:' . $this->ipInfo['REMOTE_ADDR'], 0, $accessFrequency - 1);
                 // 如果第一次和最后一次触发规则的时间间隔小于规则定义的时间间隔则是违反了RuleA
                 if ($this->ipInfo['REQUEST_TIME'] - $lastTime < getTimestampForTimeUnit($triggerTimeUnit)) {
                     return true;
@@ -436,6 +438,8 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         // 如果当前IP访问的次数大于规则限定次数则判断是否违反规则
         if ($accessTimes > $accessFrequency) {
             $lastTime = $this->redis->lIndex('RuleB:' . $this->ipInfo['REMOTE_ADDR'], -1);
+            // 保留最新的N条记录，方便下次获取间隔内第一次访问时间
+            $this->redis->lTrim('RuleB:' . $this->ipInfo['REMOTE_ADDR'], 0, $accessFrequency - 1);
             // 如果第一次和最后一次访问的时间间隔小于规则定义的时间间隔则是违反了RuleB
             if ($this->ipInfo['REQUEST_TIME'] - $lastTime < getTimestampForTimeUnit($triggerTimeUnit)) {
                 return true;
@@ -477,6 +481,8 @@ class RedisCheckOptionClass implements CheckOption, CheckOptionAdmin
         // 如果当前IP访问次数大于规则限定次数则判断是否违反规则
         if ($accessTimes > $accessFrequency) {
             $lastTime = $this->redis->lIndex($key, -1);
+            // 保留最新的N条记录，方便下次获取间隔内第一次访问时间
+            $this->redis->lTrim($key, 0, $accessFrequency - 1);
             // 如果第一次访问时间和最后一次访问时间小于规则定义的时间间隔则是违反了RuleC
             if ($this->ipInfo['REQUEST_TIME'] - $lastTime < getTimestampForTimeUnit($triggerTimeUnit)) {
                 return true;
