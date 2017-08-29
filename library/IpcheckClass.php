@@ -56,10 +56,6 @@ class IpcheckClass extends InitializeClass
         if ($baseResult || $interceptorResult) {
             // 记录访问的无效性
             $this->DBHandler->recordAccessValidity(false);
-
-            // 返回禁止访问页面
-            $dataRenderClass = new DataRenderClass();
-            $dataRenderClass->display('ACCESS_DENIED');
         } else {
             // 记录访问的有效性
             $this->DBHandler->recordAccessValidity(true);
@@ -71,5 +67,12 @@ class IpcheckClass extends InitializeClass
 
         // 关闭当前数据库连接
         $this->DBHandler->closeConnection();
+
+        if ($baseResult || $interceptorResult) {
+            // 返回禁止访问页面
+            $dataRenderClass = new DataRenderClass();
+            $dataRenderClass->display('ACCESS_DENIED');
+            die;
+        }
     }
 }
