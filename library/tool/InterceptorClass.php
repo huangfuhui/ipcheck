@@ -40,7 +40,7 @@ class InterceptorClass
         }
 
         $res = false;
-        foreach ($this->filterRules as $rule) {
+        foreach ($this->ruleChain as $rule) {
             $res = $this->DBHandler->interceptor($rule);
             if ($res) {
                 // TODO:记录拦截信息

@@ -8,6 +8,7 @@ namespace Ipcheck;
 
 use Ipcheck\Tool\InitializeClass;
 use Ipcheck\Tool\DataRenderClass;
+use Ipcheck\Tool\InterceptorClass;
 
 class IpcheckClass extends InitializeClass
 {
@@ -40,17 +41,9 @@ class IpcheckClass extends InitializeClass
             // 检测当前IP的访问频率，如果大于用户设置的访问间隔那就采取对应的措施，同时记录访问的有效性
             $baseResult = $this->DBHandler->checkFrequency();
 
-            // 判断是否开启拦截器
-            if (getConf('UseInterceptor')) {
-                $rules = getConf('RuleChain');
-                // 对IP进行规则链过滤
-                foreach ($rules as $rule) {
-                    $interceptorResult = $this->DBHandler->interceptor($rule);
-                    if ($interceptorResult) {
-                        break;
-                    }
-                }
-            }
+            // 请求IP进入拦截器
+            $interceptor = new InterceptorClass($this->getIpInfo(), $this->DBHandler);
+            $interceptorResult = $interceptor->Filter();
         }
 
         if ($baseResult || $interceptorResult) {
