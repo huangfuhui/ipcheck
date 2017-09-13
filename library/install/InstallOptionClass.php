@@ -6,16 +6,18 @@
 namespace Ipcheck\Install;
 
 use Ipcheck\DBHandlerFactory;
-use Ipcheck\RedisCheckOptionClass;
+use Ipcheck\Tool\InitializeClass;
 
-class InstallOptionClass
+class InstallOptionClass extends InitializeClass
 {
     protected $DBHandler = null;                    // 数据库操作对象
 
     public function __construct()
     {
         // 获取数据库操作对象
-        $this->DBHandler = (new DBHandlerFactory())->getDBHandler();
+        $this->DBHandler = (new DBHandlerFactory($this->getIpInfo()))->getDBHandler();
+
+        parent::__construct();
     }
 
     public function install()

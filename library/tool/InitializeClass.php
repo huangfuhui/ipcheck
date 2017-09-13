@@ -5,8 +5,6 @@
 
 namespace Ipcheck\Tool;
 
-use Ipcheck\Tool\LogClass;
-
 class InitializeClass
 {
     public static $IPINFOS = array();

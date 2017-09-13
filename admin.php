@@ -14,7 +14,7 @@ spl_autoload_register('Ipcheck\Tool\AutoloadClass::autoloadForAdmin');
 require ROOT_PATH . '/library/common/function.php';
 
 // 执行系统初始化安装
-if (!file_exists(__DIR__ . '/library/install/install.lock')) {
+if (!file_exists(ROOT_PATH . '/library/install/install.lock')) {
     $installResult = (new \Ipcheck\Install\InstallOptionClass())->install();
     if (!$installResult) {
         echo '数据库安装失败！';
