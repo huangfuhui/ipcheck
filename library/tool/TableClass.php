@@ -34,8 +34,13 @@ class TableClass
 
         // 表格数据
         $dataRows = '';
-        foreach ($this->data as $data) {
-            $dataRows .= '<tr>';
+        foreach ($this->data as $index => $data) {
+            if ($index % 2 == 0) {
+                $class = 'double_tr';
+            } else {
+                $class = 'single_tr';
+            }
+            $dataRows .= "<tr class='$class'>";
             foreach ($data as $k => $v) {
                 $dataRows .= '<td>' . $v . '</td>' . PHP_EOL;
             }
